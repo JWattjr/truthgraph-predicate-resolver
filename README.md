@@ -17,6 +17,21 @@ graph outcome. Validators recompute those fields from the same public evidence
 through a custom equivalence function. No frontend or single oracle decides the
 result.
 
+## Lifecycle and API
+
+- Deploy in `OPEN` with a future deadline.
+- Call `resolve()` after the deadline. A terminal `TRUE` or `FALSE` becomes
+  `RESOLVED`; insufficient evidence stays fail-closed as `UNRESOLVED` and can
+  be retried.
+- Read canonical state with `get_state()`.
+- Use an outcome for settlement only after the GenLayer transaction is final.
+
+## Live evidence
+
+- [StudioNet contract](https://explorer-studio.genlayer.com/address/0x54EE4f4Bc50c8B536992BdDb48C0DC6531c33Ace)
+- [Bradbury contract](https://explorer-bradbury.genlayer.com/address/0x8a0A6D18AF51fBaA0Cf484C86DaB5F7F54A3bB2f)
+- Exact receipts and current finality are recorded in `deployments/`.
+
 ## Verify
 
 ```powershell
