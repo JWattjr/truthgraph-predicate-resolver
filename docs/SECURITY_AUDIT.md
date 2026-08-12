@@ -1,59 +1,46 @@
-# Security and consensus audit
+# Security and consensus audit: TruthGraph
 
-Audit date: 2026-08-12  
-Scope: the six Python Intelligent Contracts in `contracts/`  
+Audit date: 2026-08-12
+Scope: `contracts/TruthGraph.py`
 Method: manual review, GenVM AST lint, SDK schema validation, direct-mode
-regression tests, explicit validator execution, and hosted-network smoke tests.
+tests, validator-disagreement tests, and hosted-network receipt inspection.
 
-## Executive summary
+## Result
 
-The reviewed contracts implement bounded GenLayer-native judgment primitives.
-No unresolved critical or high-severity code issue was found after remediation.
-They do not hold or transfer funds, which substantially limits direct asset-loss
-risk. A production payout adapter remains out of scope and must wait for
-GenLayer finality before making irreversible transfers.
+No unresolved critical or high-severity issue was found after remediation.
+TruthGraph does not custody or transfer funds. Consumers must wait for GenLayer
+finality before using an outcome for an irreversible action.
 
 ## Remediated findings
 
 | ID | Severity | Finding | Remediation |
 | --- | --- | --- | --- |
-| GL-01 | High | Rulebook winner IDs were free-form LLM output. | Freeze a participant allowlist at deployment and fail to `INCONCLUSIVE` for unknown winners. |
-| GL-02 | Medium | MarketSpecGuard checked terminal state `LISTED` although it stores `LISTABLE`. | Correct terminal-state check and add idempotency regression coverage. |
-| GL-03 | Medium | All-source outages still invoked the LLM, allowing unsupported terminal judgments. | Derive deterministic unresolved/inconclusive results before any LLM call when every source is unavailable. |
-| GL-04 | Medium | HTTPS validation allowed localhost, private literal IPs, userinfo, non-default ports, and internal-style hosts. | Add bounded public-host validation to all evidence inputs. |
-| GL-05 | Medium | TruthGraph formulas could reference undeclared atom IDs and silently resolve them as unknown. | Validate the complete formula graph against frozen atom IDs in the constructor. |
-| GL-06 | Medium | CLI JSON arguments are decoded before contract invocation, while constructors originally assumed JSON strings. | Accept decoded list/object values and persist canonical JSON strings internally. |
-| GL-07 | Low | UTF-8 decoding could fail on malformed or truncated source bytes. | Bound bytes before decoding and replace invalid byte sequences. |
-| GL-08 | Low | Conditional false-trigger state did not expose an explicit terminal outcome. | Store `outcome = VOID` when the trigger is false. |
-| GL-09 | Low | Milestone score used a float-producing division before integer conversion. | Use integer floor division for deterministic basis-point scoring. |
-| GL-10 | Low | Validator wrappers accepted any object exposing `calldata`. | Require `gl.vm.Return` before comparing leader and independent results. |
+| TG-01 | Medium | A formula could reference an undeclared atom and silently become unknown. | Validate the complete bounded formula graph against the frozen atom IDs during construction. |
+| TG-02 | Medium | All-source outages could reach the LLM. | Return a deterministic all-`UNRESOLVED` atom map before any prompt when no source is available. |
+| TG-03 | Medium | Evidence URL checks allowed local/private targets. | Require bounded public HTTPS hosts and reject userinfo, private literal IPs, internal suffixes, and non-default ports. |
+| TG-04 | Medium | A bound consensus method captured contract storage in nondeterministic execution. | Snapshot canonical graph and source data before `run_nondet_unsafe`; nested leader/validator closures contain no `self` reference. |
+| TG-05 | Low | Source bytes and CLI-decoded JSON needed defensive handling. | Bound bytes, decode with replacement, accept decoded objects, and persist canonical JSON. |
+| TG-06 | Low | Validator wrappers accepted objects merely exposing `calldata`. | Require `gl.vm.Return`, independently recompute the complete atom map and derived outcome, and compare both. |
 
-## Residual risks and assumptions
+## Residual risks
 
-- Hostname validation cannot prevent DNS rebinding by itself. Deploy only with
-  stable, pre-reviewed public source domains; production deployments should add
-  an explicit domain allowlist.
-- Public pages can drift between leader and validator fetches. The contracts
-  compare normalized decision fields and fail consensus on substantive
-  disagreement, but highly dynamic pages remain poor evidence.
-- LLMs may disagree on genuinely ambiguous language. This is expected; the
-  network can rotate validators or become undetermined rather than forcing a
-  settlement.
-- Source authenticity is external to the contracts. HTTPS reachability is not
-  proof that a publisher is authoritative.
-- Contract-level outcomes should be consumed only after network finality. This
-  repository contains no payout or escrow code.
+- DNS rebinding is not eliminated by syntax validation; deploy with reviewed,
+  stable domains or add a domain allowlist.
+- Public evidence can drift between validator fetches. A substantive mismatch
+  intentionally prevents consensus rather than forcing a result.
+- HTTPS reachability does not establish publisher authority.
+- The graph language is intentionally bounded to 12 atoms and depth 8.
 
-## Verification gates
+## Verification evidence
 
-- All contract files use the pinned `py-genlayer` runner.
-- GenVM AST lint passes for all six files.
-- GenLayer SDK schema validation passes for all six files.
-- Direct tests cover happy paths, fail-closed paths, deadline/lifecycle logic,
-  malicious leader disagreement, URL controls, formula integrity, source
-  conflict, unknown participants, and idempotency.
-- Hosted deployments are counted as evidence only when the leader execution
-  receipt is `SUCCESS` and schema/state reads succeed.
+- Pinned GenVM runner; GenVM lint and SDK validation pass.
+- Standalone direct suite: 3 passed.
+- AST regression: no storage reference inside leader/validator closures.
+- StudioNet deployment and resolution are finalized; leader execution was
+  `SUCCESS`, votes were 3 agree / 2 idle, and no storage warning appeared.
+- Live result: both frozen atoms `TRUE`; derived graph outcome `TRUE`.
+- Bradbury deployment is recorded separately; its appeal/finality status is
+  not represented as final until RPC confirmation.
 
-This review is an engineering security assessment, not a formal verification,
-financial guarantee, or legal certification.
+This is an engineering assessment, not formal verification or a financial or
+legal guarantee.

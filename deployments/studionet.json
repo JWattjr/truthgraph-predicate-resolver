@@ -2,14 +2,24 @@
   "contract": "TruthGraph",
   "network": "studionet",
   "chain_id": 61999,
-  "deployer": "0xdB433ff614bDD1ecE21Aa97221C3E0a7ecf79c92",
-  "contract_address": "0x718c2825ab5b5C37e54A5df1e89C3369a1085fc2",
-  "deployment_transaction": "0x0c3e24ff7cfa0682bf922770b0eb73a1f01abd598d6c173fea8e4deefe6ebe74",
-  "explorer_url": "https://explorer-studio.genlayer.com/address/0x718c2825ab5b5C37e54A5df1e89C3369a1085fc2",
+  "deployer": "0xdB433ff614bDD1ecE21Aa97221C3e0a7ecf79c92",
+  "contract_address": "0x54EE4f4Bc50c8B536992BdDb48C0DC6531c33Ace",
+  "deployment_transaction": "0x24b211b4d3e68ffa484548dbc028688c85e380c2ec81f11cb4d29359473f9d16",
+  "explorer_url": "https://explorer-studio.genlayer.com/address/0x54EE4f4Bc50c8B536992BdDb48C0DC6531c33Ace",
   "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
-  "execution_verified": true,
+  "deployment_execution_verified": true,
   "schema_verified": true,
   "state_verified": true,
   "finalized_verified": true,
-  "notes": "Successful leader execution and readable OPEN state. A prior rollback transaction is excluded from evidence."
+  "consensus_test_transaction": "0x43da9725bb5fac72a2e4dfb3a37281d5bacf857b644c4b20cef12f2e458192ac",
+  "consensus_test_status": "FINALIZED",
+  "consensus_test_execution": "SUCCESS",
+  "validator_votes": {"agree": 3, "idle": 2},
+  "storage_warning_detected": false,
+  "consensus_test_state": "RESOLVED",
+  "consensus_test_outcome": "TRUE",
+  "consensus_test_result": {
+    "atom_statuses": {"bradbury_role": "TRUE", "chain_id": "TRUE"},
+    "outcome": "TRUE"
+  }
 }
