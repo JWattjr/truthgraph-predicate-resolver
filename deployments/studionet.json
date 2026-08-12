@@ -1,0 +1,15 @@
+{
+  "contract": "TruthGraph",
+  "network": "studionet",
+  "chain_id": 61999,
+  "deployer": "0xdB433ff614bDD1ecE21Aa97221C3E0a7ecf79c92",
+  "contract_address": "0x718c2825ab5b5C37e54A5df1e89C3369a1085fc2",
+  "deployment_transaction": "0x0c3e24ff7cfa0682bf922770b0eb73a1f01abd598d6c173fea8e4deefe6ebe74",
+  "explorer_url": "https://explorer-studio.genlayer.com/address/0x718c2825ab5b5C37e54A5df1e89C3369a1085fc2",
+  "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
+  "execution_verified": true,
+  "schema_verified": true,
+  "state_verified": true,
+  "finalized_verified": true,
+  "notes": "Successful leader execution and readable OPEN state. A prior rollback transaction is excluded from evidence."
+}
